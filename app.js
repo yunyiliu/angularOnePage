@@ -1,24 +1,57 @@
 (function(){
+'use strict';
+  angular.module("ShoppingListCheckOff",[])
+  .controller("ToBuyController", ToBuyController)
+  .controller("AlreadyBoughtController", AlreadyBoughtController)
+  .service("ShoppingListCheckOffService",ShoppingListCheckOffService);
 
-  angular.module('app',[])
+  ToBuyController.$inject = ['$scope', 'ShoppingListCheckOffService'];
+  function ToBuyController($scope, ShoppingListCheckOffService) {
+    $scope.toBuyList = ShoppingListCheckOffService.getToBuy();
+    $scope.addToList = function(index){
+      ShoppingListCheckOffService.addToList(index);
+    }
+  }
 
-  .controller('firstController', function($scope){
-    $scope.name = "";
-    $scope.res = "Please enter data first";
-    $scope.showRes = function() {
-      var arrs = $scope.name.split(',');
-      var count = 0;
-      for( i = 0; i < arrs.length; i++) {
-         count++;
+  AlreadyBoughtController.$inject = ['$scope', 'ShoppingListCheckOffService'];
+  function AlreadyBoughtController($scope, ShoppingListCheckOffService) {
+    $scope.boughtList = ShoppingListCheckOffService.getList();
+  }
+  function ShoppingListCheckOffService() {
+    var toBuyList = [
+      {
+        "name": "cookies",
+        "quantity": "10"
+      },
+      {
+        "name": "apples",
+        "quantity": "8"
+      },
+      {
+        "name": "ice cream",
+        "quantity": "12"
+      },
+      {
+        "name": "banana",
+        "quantity": "18"
+      },
+      {
+        "name": "milk",
+        "quantity": "1"
       }
-      if(count === 0 || $scope.name === "") {
-        $scope.res =  "Please enter data first";
-      } else if(count <= 3 && count != 0) {
-        $scope.res = "Enjoy!";
-      } else {
-        $scope.res = "Too much!";
-      }
-    };
-  });
+    ];
+
+    var BoughtItems = [];
+    this.addToList = function(index) {
+      BoughtItems.push(toBuyList[index]);
+      toBuyList.splice(index, 1);
+    }
+    this.getList = function(){
+      return BoughtItems;
+    }
+    this.getToBuy = function() {
+      return toBuyList;
+    }
+  }
 })();
 
